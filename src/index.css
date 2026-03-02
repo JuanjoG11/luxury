@@ -429,6 +429,18 @@ h3,
   color: #fff;
 }
 
+.time-btn.booked {
+  background: #f0f0f0;
+  color: #aaa;
+  border-color: #ccc;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.time-btn.booked:hover {
+  background: #f0f0f0;
+}
+
 /* Date input */
 .date-input {
   width: 100%;
