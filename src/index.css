@@ -73,6 +73,55 @@ h3,
   .grid-2 {
     grid-template-columns: 1fr;
   }
+
+  .section {
+    padding: 3rem 1.25rem;
+  }
+
+  .section-dark {
+    padding: 3rem 1.25rem;
+  }
+
+  .barbers-section {
+    padding: 3rem 1.25rem;
+  }
+
+  .flyer-section {
+    padding: 3rem 1.25rem;
+  }
+
+  .footer {
+    padding: 3rem 1.25rem;
+  }
+
+  .footer-title {
+    font-size: clamp(3rem, 18vw, 8rem);
+  }
+
+  .footer-sub {
+    letter-spacing: 0.3em;
+  }
+
+  .footer-links {
+    gap: 1.5rem;
+  }
+
+  .modal-box {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .time-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .step-nav {
+    flex-direction: column;
+  }
+
+  .barber-name {
+    font-size: 2rem;
+  }
 }
 
 /* Cards */
@@ -154,12 +203,14 @@ h3,
 
 /* Header */
 .header {
-  padding: 4rem 2rem 2rem;
+  padding: 4rem 1.5rem 2rem;
   border-bottom: 6px solid #000;
+  text-align: center;
 }
 
 .header-title {
-  font-size: clamp(5rem, 15vw, 14rem);
+  font-size: clamp(4rem, 18vw, 14rem);
+  text-align: center;
 }
 
 .header-badge {
@@ -170,9 +221,10 @@ h3,
   font-family: 'Inter', sans-serif;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  font-size: clamp(0.65rem, 2.5vw, 0.85rem);
   margin-top: 1.5rem;
+  max-width: 100%;
 }
 
 .header-info {

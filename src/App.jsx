@@ -77,6 +77,35 @@ function App() {
       <footer className="footer">
         <h2 className="gothic footer-title">BrotherHood</h2>
         <p className="footer-sub">Pereira • Colombia</p>
+
+        {/* Info cards al final */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: '1.5rem',
+          maxWidth: '700px',
+          margin: '0 auto 3rem',
+        }}>
+          <div style={{
+            border: '3px solid #fff',
+            padding: '1.5rem',
+            textAlign: 'left',
+          }}>
+            <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 900, textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.15em', opacity: 0.5, marginBottom: '0.5rem' }}>Ubicación</p>
+            <p style={{ fontWeight: 700, fontSize: '1.1rem' }}>Calle 33 #29A-22 Local 2</p>
+            <p style={{ opacity: 0.5, fontWeight: 700, fontSize: '0.9rem' }}>Barrio Villa del Prado, Pereira</p>
+          </div>
+          <div style={{
+            border: '3px solid #fff',
+            padding: '1.5rem',
+            textAlign: 'left',
+          }}>
+            <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 900, textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.15em', opacity: 0.5, marginBottom: '0.5rem' }}>Contacto WhatsApp</p>
+            <p style={{ fontWeight: 700, fontSize: '1.1rem' }}>+57 301 598 1843</p>
+            <p style={{ opacity: 0.5, fontWeight: 700, fontSize: '0.9rem' }}>Atención inmediata</p>
+          </div>
+        </div>
+
         <div className="footer-links">
           <a href="https://www.instagram.com/brother_hood8_" target="_blank" rel="noreferrer">Instagram</a>
           <a href="https://wa.me/573015981843" target="_blank" rel="noreferrer">WhatsApp</a>
