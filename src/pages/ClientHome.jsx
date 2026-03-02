@@ -17,7 +17,7 @@ export default function ClientHome() {
             <BarberGrid onSelectBarber={setSelectedBarber} />
 
             {/* Services / Flyer Section */}
-            <section className="flyer-section">
+            <section className="flyer-section" id="services">
                 <div className="flyer-grid">
                     <motion.div
                         className="flyer-text"

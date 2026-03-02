@@ -26,7 +26,7 @@ const BARBERS = [
 
 export default function BarberGrid({ onSelectBarber }) {
     return (
-        <section className="barbers-section">
+        <section className="barbers-section" id="booking">
             <div className="container">
                 <h2 className="section-title">Elige tu Artista</h2>
                 <div className="grid-3">
