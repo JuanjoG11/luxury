@@ -79,19 +79,7 @@ export default function BookingModal({ barber, onClose }) {
                 clientPhone: clientPhone.trim(),
             });
 
-            // Notificar al barbero por WhatsApp
-            const waNumber = BARBER_WHATSAPP[barber.id] || '573015981843';
-            const msg = encodeURIComponent(
-                `🔔 *Nueva cita agendada!*\n\n` +
-                `👤 Cliente: ${clientName.trim()}\n` +
-                `📱 Teléfono: ${clientPhone || 'No indicado'}\n` +
-                `✂️ Servicios: ${servicePrices}\n` +
-                `💰 Total: $${totalPrice}K\n` +
-                `📅 Fecha: ${date}\n` +
-                `⏰ Hora: ${time}`
-            );
-            window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
-
+            // La notificación al barbero se envía automáticamente desde Supabase
             setDone(true);
         } catch (err) {
             setError('Error al agendar. Intenta de nuevo.');
