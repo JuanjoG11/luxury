@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Póster QR - Luxury</title>
+    <!-- Librería para generar el QR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            background-color: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .header-info {
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+        .header-info h2 {
+            margin:0 0 10px 0;
+            color: #fff;
+        }
+        .header-info p {
+            color: #aaa;
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+        }
+        .poster {
+            background: #000;
+            width: 450px;
+            height: 650px;
+            padding: 50px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            box-sizing: border-box;
+            border: 1px solid #333;
+        }
+        
+        /* Detalles de las esquinas "High Tech / Premium" */
+        .corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #fff;
+            opacity: 0.8;
+        }
+        .tl { top: 25px; left: 25px; border-right: none; border-bottom: none; }
+        .tr { top: 25px; right: 25px; border-left: none; border-bottom: none; }
+        .bl { bottom: 25px; left: 25px; border-right: none; border-top: none; }
+        .br { bottom: 25px; right: 25px; border-left: none; border-top: none; }
+        
+        .logo-area {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .logo-area img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+        .logo-area h1 {
+            margin: 15px 0 0 0;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+        }
+        .qr-wrapper {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 40px rgba(255,255,255,0.15);
+            position: relative;
+        }
+        .call-to-action {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .call-to-action h2 {
+            margin: 0;
+            font-size: 34px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+        .call-to-action p {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #888;
+            max-width: 280px;
+            line-height: 1.4;
+        }
+        
+        .btn-download {
+            margin-top: 40px;
+            padding: 16px 36px;
+            font-size: 18px;
+            font-weight: 900;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-download:hover { 
+            background: #ddd; 
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-info">
+        <h2>🔥 Generador de Póster Promocional 🔥</h2>
+        <p>
+            He creado esta herramienta para ti. Este póster está conectado a tu enlace oficial en Vercel.<br>
+            Presiona "DESCARGAR PÓSTER HD" y envíaselo a tu cliente para que lo imprima o lo suba a las historias de Instagram.
+        </p>
+    </div>
+
+    <!-- Contenedor del Póster -->
+    <div class="poster" id="poster">
+        <!-- Esquinas de diseño -->
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+
+        <div class="logo-area">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIbGNtcwIQAABtbnRyUkdCIFhZWiAH4gADABQACQAOAB1hY3NwTVNGVAAAAABzYXdzY3RybAAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLWhhbmSdkQA9QICwPUB0LIGepSKOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAABxjcHJ0AAABDAAAAAx3dHB0AAABGAAAABRyWFlaAAABLAAAABRnWFlaAAABQAAAABRiWFlaAAABVAAAABRyVFJDAAABaAAAAGBnVFJDAAABaAAAAGBiVFJDAAABaAAAAGBkZXNjAAAAAAAAAAV1UkdCAAAAAAAAAAAAAAAAdGV4dAAAAABDQzAAWFlaIAAAAAAAAPNUAAEAAAABFslYWVogAAAAAAAAb6AAADjyAAADj1hZWiAAAAAAAABilgAAt4kAABjaWFlaIAAAAAAAACSgAAAPhQAAtsRjdXJ2AAAAAAAAACoAAAB8APgBnAJ1A4MEyQZOCBIKGAxiDvQRzxT2GGocLiBDJKwpai5+M+s5sz/WRldNNlR2XBdkHWyGdVZ+jYgskjacq6eMstu+mcrH12Xkd/H5////2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAFAAUADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7LooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAorH8N+KPDniRr1dA1qx1JrGdre6W3mDmGQEgqwHTofritigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAr5u/bU+Nw8C+HW8GeG7vHiXVIT50sbfNY27cFs9nbkL3Ay3Hy5+ka+Ev27fg2/h7VW+JmlXdzdWWqXXl6jHcyl3gnYfKVJ52EAjH8OABwQAAeGfBT4k638MPHlp4l0qV3iDBL61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k+uSeMYNfUlIyqwKsAQeCDQB8x/Ev4rz/GvQ5/hx8HdM1LUBq2INT1u4tnhtLO3JG/JYZJI4xjpnGSa7T4xfB2TV/gPpPg/wpN5ereF/s1zo0rkKXmgXbgnoC4Le24g9BXs8aJGoVFVVHQAYFOoA+fPD/wC1H4T0/Tk074k6ZrPhXxPbIEu7KWwkZZJBwWjIB+UnkZx16nrXnPjzxN4n+IHxz+Ffi+fQL3RPCieIIrXRor1ClxckujSXDJ/CpwgHsK+x3jjdlZ41YqcqSM4p1ABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABXzl+1B8Hvih8W5yun+ItJsNEsTmy0mR5B9ocdZZXAxuPRRyAPQk19G0UAfkJ468IeI/BHiCbQfFGlT6dfxc7JBw69mRhwyn1BIo8C+LfEHgnxLa+IfDWoy2N/btlXQ/K690cdGU9wa/UH40/C3wz8VPCr6Nr9uEnjBayvo1HnWsh7qe4PGVPB+oBH5sfGL4Y+KPhd4ok0XxFaHy2JNpexqfJuk/vIfX1U8jvQB+gv7Onxw8PfFzQfKPlWHiK3j/07TWbqOhkjz95D+a5wexPzb+0p4k8UfHb42R/C3wKrXGl6TK0ZCtiF5l4luJCONifdHXvjlsV86/Dux8Waj4x0618EJqB15pR9kaxcpKjd23DG0AZySQAM54r9I/2bfg/p/wAJ/CJilaO88RahiXVL7GSzdRGpPOxcn6nJPoADyTRf2JPCK6Eqaz4v1uXVinzS2ixRwK3sjKzED/eGfavoD4M+Cz8PPhrpHg86gdQOno6/aNmzfukZ/u5OPvYxmuwooATaNxbAyRgmloooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACsrxT4b0DxTpL6V4j0iy1Wyc5MN1EHUH1Geh9xzWrRQBzngvwH4N8FxyJ4V8NaZpHm8SPbQBXcejN1P4mujoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/2Q==" alt="Logo de la Barbería" onerror="this.src='https://ui-avatars.com/api/?name=L&background=000&color=fff&size=200'">
+            <h1>Luxury</h1>
+        </div>
+
+        <div class="qr-wrapper" id="qrcode"></div>
+
+        <div class="call-to-action">
+            <h2>AGENDA TU CITA<br>AQUÍ</h2>
+            <p>Escanea este código con la cámara de tu celular y reserva en segundos.</p>
+        </div>
+    </div>
+
+    <button class="btn-download" onclick="descargarPoster()">📸 Descargar Póster HD</button>
+
+    <script>
+        // Generar el código QR automáticamente al enlace Vercel
+        const url_del_proyecto = "https://luxurybrother.vercel.app";
+        
+        new QRCode(document.getElementById("qrcode"), {
+            text: url_del_proyecto,
+            width: 220,
+            height: 220,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H // Nivel H permite excelente legibilidad
+        });
+
+        // Función para descargar como imagen de alta calidad
+        function descargarPoster() {
+            const poster = document.getElementById("poster");
+            
+            // Usamos html2canvas para tomar una captura del elemento y descargarla
+            html2canvas(poster, {
+                scale: 3, // Multiplicador para máxima resolución (Full HD)
+                backgroundColor: "#000000",
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement("a");
+                link.download = "Poster_Reservas_Luxury.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>

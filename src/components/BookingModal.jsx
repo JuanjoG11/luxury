@@ -2,16 +2,32 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getBookedSlots, createAppointment } from '../lib/appointments';
 
-const SERVICES = [
-    { id: 'corte', name: 'Corte', price: 25 },
-    { id: 'corte-barba', name: 'Corte + Barba', price: 30 },
-    { id: 'arreglo-barba', name: 'Arreglo de Barba', price: 15 },
-    { id: 'cejas', name: 'Cejas', price: 8 },
-    { id: 'limpieza', name: 'Limpieza Facial', price: 80 },
-    { id: 'lineas', name: 'Líneas Básicas', price: 2 },
-    { id: 'freestyle', name: 'Diseño Free Style', price: 10 },
-    { id: 'pigmentacion', name: 'Pigmentación', price: 5 },
-];
+const SERVICES_BY_CATEGORY = {
+    barber: [
+        { id: 'corte', name: 'Corte', price: 25 },
+        { id: 'corte-barba', name: 'Corte + Barba', price: 30 },
+        { id: 'arreglo-barba', name: 'Arreglo de Barba', price: 15 },
+        { id: 'cejas', name: 'Cejas', price: 8 },
+        { id: 'limpieza', name: 'Limpieza Facial', price: 80 },
+        { id: 'lineas', name: 'Líneas Básicas', price: 2 },
+        { id: 'freestyle', name: 'Diseño Free Style', price: 10 },
+        { id: 'pigmentacion', name: 'Pigmentación', price: 5 },
+    ],
+    manicure: [
+        { id: 'tradicional', name: 'Tradicional', price: 18 },
+        { id: 'semipermanente', name: 'Semipermanente', price: 40 },
+        { id: 'rubber', name: 'Rubber', price: 55 },
+        { id: 'dipping', name: 'Dipping', price: 55 },
+        { id: 'recubrimiento', name: 'Recubrimiento', price: 70 },
+        { id: 'acrilico-esculpido', name: 'Acrílico/Poligel Esculpido', price: 100 },
+        { id: 'acrilico-sobre-tip', name: 'Acrílico/Poligel Sobre Tip', price: 95 },
+        { id: 'press-on', name: 'Press On', price: 75 },
+        { id: 'retoque', name: 'Retoque', price: 70 },
+        { id: 'una-adicional', name: 'Uña Adicional', price: 7 },
+        { id: 'retiro-sistema', name: 'Retiro Acrílico/Poligel', price: 15 },
+        { id: 'retiro-semi', name: 'Retiro Semipermanente', price: 10 },
+    ]
+};
 
 const TIME_SLOTS = [
     '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
@@ -23,11 +39,15 @@ const BARBER_WHATSAPP = {
     nico: '573207240085',
     mateo: '573015981843',
     adrian: '573117100880',
+    valeria: '573000000000', // Reemplazar con el WhatsApp de Vero Nails
 };
 
 export default function BookingModal({ barber, onClose }) {
     const [step, setStep] = useState(1);
     const [selectedServices, setSelectedServices] = useState([]);
+    
+    // Lista dinámica según la categoría (por defecto barbería si no está definido)
+    const currentServices = SERVICES_BY_CATEGORY[barber.category || 'barber'];
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [clientName, setClientName] = useState('');
@@ -82,7 +102,12 @@ export default function BookingModal({ barber, onClose }) {
             // La notificación al barbero se envía automáticamente desde Supabase
             setDone(true);
         } catch (err) {
-            setError('Error al agendar. Intenta de nuevo.');
+            console.error('Detalles del error al agendar:', err);
+            if (err.message && (err.message.includes('fetch') || err.message.includes('network'))) {
+                setError('Error de conexión. Verifica que el servidor o la base de datos (Supabase) estén activos.');
+            } else {
+                setError(`Error al agendar: ${err.message || 'Intenta de nuevo.'}`);
+            }
         } finally {
             setSubmitting(false);
         }
@@ -136,7 +161,7 @@ export default function BookingModal({ barber, onClose }) {
                                 Puedes seleccionar varios
                             </p>
                             <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
-                                {SERVICES.map((svc) => {
+                                {currentServices.map((svc) => {
                                     const isSelected = selectedServices.find((s) => s.id === svc.id);
                                     return (
                                         <div
@@ -202,7 +227,6 @@ export default function BookingModal({ barber, onClose }) {
                             </div>
                         </motion.div>
                     )}
-
                     {/* PASO 3: Hora */}
                     {step === 3 && (
                         <motion.div key="s3" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} transition={{ duration: 0.18 }}>
@@ -211,15 +235,36 @@ export default function BookingModal({ barber, onClose }) {
                             <div className="time-grid">
                                 {TIME_SLOTS.map((t) => {
                                     const isBooked = bookedSlots.includes(t);
+                                    
+                                    // Bloquear horas pasadas si es hoy
+                                    const isPast = () => {
+                                        const now = new Date();
+                                        const todayStr = now.toISOString().split('T')[0];
+                                        if (date !== todayStr) return false;
+
+                                        const [timePart, modifier] = t.split(' ');
+                                        let [hours, minutes] = timePart.split(':').map(Number);
+                                        if (modifier === 'PM' && hours !== 12) hours += 12;
+                                        if (modifier === 'AM' && hours === 12) hours = 0;
+
+                                        const slotTime = new Date();
+                                        slotTime.setHours(hours, minutes, 0, 0);
+                                        
+                                        // Permitir agendar si faltan al menos 15 minutos para la hora
+                                        return slotTime < new Date(now.getTime() - 15 * 60000);
+                                    };
+
+                                    const disabled = isBooked || isPast();
+
                                     return (
                                         <button
                                             key={t}
-                                            className={`time-btn ${time === t ? 'selected' : ''} ${isBooked ? 'booked' : ''}`}
-                                            disabled={isBooked}
-                                            onClick={() => !isBooked && setTime(t)}
-                                            title={isBooked ? 'Hora ocupada' : ''}
+                                            className={`time-btn ${time === t ? 'selected' : ''} ${disabled ? 'booked' : ''}`}
+                                            disabled={disabled}
+                                            onClick={() => !disabled && setTime(t)}
+                                            title={isBooked ? 'Hora ocupada' : isPast() ? 'Hora pasada' : ''}
                                         >
-                                            {isBooked ? <s>{t}</s> : t}
+                                            {disabled ? <s>{t}</s> : t}
                                         </button>
                                     );
                                 })}
@@ -253,7 +298,7 @@ export default function BookingModal({ barber, onClose }) {
                             />
 
                             <div className="summary-box">
-                                <div className="summary-row"><span>Barbero</span><strong>{barber.name}</strong></div>
+                                <div className="summary-row"><span>{barber.category === 'manicure' ? 'Especialista' : 'Barbero'}</span><strong>{barber.name}</strong></div>
                                 <div className="summary-row">
                                     <span>Servicios</span>
                                     <strong style={{ textAlign: 'right', maxWidth: '60%' }}>{serviceNames}</strong>

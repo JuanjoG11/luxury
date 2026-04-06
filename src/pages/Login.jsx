@@ -6,6 +6,7 @@ const BARBERS = [
     { id: 'nico', name: 'Nico' },
     { id: 'mateo', name: 'Mateo' },
     { id: 'adrian', name: 'Adrián' },
+    { id: 'valeria', name: 'Vero Nails' },
 ];
 
 // PINES de acceso simples (cambiables después o vía base de datos)
@@ -13,6 +14,7 @@ const PINS = {
     nico: '1111',
     mateo: '2222',
     adrian: '3333',
+    valeria: '4444', // Puedes cambiar el PIN si lo deseas
 };
 
 export default function Login() {
@@ -41,8 +43,8 @@ export default function Login() {
             </Link>
 
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} style={{ width: '100%', maxWidth: '400px' }}>
-                <h1 className="gothic" style={{ fontSize: '6rem', textAlign: 'center', marginBottom: '2rem', lineHeight: 0.9 }}>
-                    Acceso<br />Barberos
+                <h1 className="gothic" style={{ fontSize: '5rem', textAlign: 'center', marginBottom: '2rem', lineHeight: 0.9 }}>
+                    Acceso<br />Equipo
                 </h1>
 
                 <div style={{ background: '#111', padding: '2rem', border: '4px solid #fff', boxShadow: '8px 8px 0 #fff' }}>

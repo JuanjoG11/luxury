@@ -1,27 +1,88 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
 import BarberGrid from '../components/BarberGrid';
 import BookingModal from '../components/BookingModal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const FLYER_IMG = 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=800';
 
+const BARBER_PRICES = [
+    ['✂ Corte', '$25K'],
+    ['✂ Corte + Barba', '$30K'],
+    ['✂ Arreglo de Barba', '$15K'],
+    ['✂ Cejas', '$8K'],
+    ['✂ Limpieza Facial', '$80K'],
+    ['✂ Líneas Básicas', '$2K'],
+    ['✂ Free Style', '$10K'],
+    ['✂ Pigmentación', '$5K'],
+];
+
+const MANICURE_PRICES = [
+    ['💅 Tradicional', '$18K'],
+    ['💅 Semipermanente', '$40K'],
+    ['💅 Rubber', '$55K'],
+    ['💅 Dipping', '$55K'],
+    ['💅 Recubrimiento', '$70K'],
+    ['💅 Acr/Poligel Esculpido', '$100K'],
+    ['💅 Acr/Poligel Sobre Tip', '$95K'],
+    ['💅 Press On', '$75K'],
+];
+
 export default function ClientHome() {
+    const [selectedCategory, setSelectedCategory] = useState('barber');
     const [selectedBarber, setSelectedBarber] = useState(null);
+    const [isBarberLoggedIn, setIsBarberLoggedIn] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const bi = localStorage.getItem('brotherhood_barber');
+        if (bi) setIsBarberLoggedIn(true);
+    }, []);
+
+    const currentPrices = selectedCategory === 'barber' ? BARBER_PRICES : MANICURE_PRICES;
 
     return (
         <div style={{ minHeight: '100vh', background: '#fff' }}>
+            {isBarberLoggedIn && (
+                <motion.button
+                    initial={{ x: 100 }}
+                    animate={{ x: 0 }}
+                    onClick={() => navigate('/dashboard')}
+                    style={{
+                        position: 'fixed',
+                        top: '1.5rem',
+                        right: '1.5rem',
+                        zIndex: 1000,
+                        background: '#000',
+                        color: '#fff',
+                        border: '2px solid #fff',
+                        padding: '0.8rem 1.2rem',
+                        fontWeight: 900,
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '0.8rem',
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                        cursor: 'pointer',
+                        textTransform: 'uppercase'
+                    }}
+                >
+                    ⚡ MI PANEL
+                </motion.button>
+            )}
             <Header />
 
-            <BarberGrid onSelectBarber={setSelectedBarber} />
+            <BarberGrid 
+                onSelectBarber={setSelectedBarber} 
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+            />
 
             {/* Services / Flyer Section */}
             <section className="flyer-section" id="services">
                 <div className="flyer-grid">
                     <motion.div
                         className="flyer-text"
-                        initial={{ x: -50, opacity: 0 }}
+                        initial={{ x: -20, opacity: 0 }}
                         whileInView={{ x: 0, opacity: 1 }}
                         viewport={{ once: true }}
                     >
@@ -29,20 +90,13 @@ export default function ClientHome() {
                             Precios &amp;<br />
                             <span className="stroke-text">Servicios</span>
                         </h2>
-                        <p>
-                            Echa un vistazo a nuestros servicios y precios. Calidad garantizada en cada corte.
+                        <p style={{ marginBottom: '2rem' }}>
+                            {selectedCategory === 'barber' 
+                                ? 'Expertos en degradados, barbas y estilo tradicional con la mejor calidad del mercado.'
+                                : 'Especialistas en cuidado de uñas, acrílicas, semipermanentes y spa.'}
                         </p>
                         <div style={{ display: 'grid', gap: '0.5rem' }}>
-                            {[
-                                ['✂ Corte', '$25K'],
-                                ['✂ Corte + Barba', '$30K'],
-                                ['✂ Arreglo de Barba', '$15K'],
-                                ['✂ Cejas', '$8K'],
-                                ['✂ Limpieza Facial', '$80K'],
-                                ['✂ Líneas Básicas', '$2K'],
-                                ['✂ Free Style', '$10K'],
-                                ['✂ Pigmentación', '$5K'],
-                            ].map(([name, price]) => (
+                            {currentPrices.map(([name, price]) => (
                                 <div key={name} style={{
                                     display: 'flex',
                                     justifyContent: 'space-between',
@@ -61,13 +115,13 @@ export default function ClientHome() {
                     </motion.div>
 
                     <motion.div
-                        initial={{ scale: 0.92, opacity: 0 }}
+                        initial={{ scale: 0.95, opacity: 0 }}
                         whileInView={{ scale: 1, opacity: 1 }}
                         viewport={{ once: true }}
                     >
                         <img
-                            src={FLYER_IMG}
-                            alt="BrotherHood Barbershop"
+                            src={selectedCategory === 'barber' ? FLYER_IMG : 'https://images.unsplash.com/photo-1604654894611-6973b376cbde?auto=format&fit=crop&q=80&w=800'}
+                            alt="Luxury Services"
                             className="flyer-img"
                         />
                     </motion.div>

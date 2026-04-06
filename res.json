@@ -1,0 +1,12 @@
+{
+  "error": {
+    "code": "PGRST205",
+    "details": null,
+    "hint": null,
+    "message": "Could not find the table 'public.appointments' in the schema cache"
+  },
+  "data": null,
+  "count": null,
+  "status": 404,
+  "statusText": "Not Found"
+}

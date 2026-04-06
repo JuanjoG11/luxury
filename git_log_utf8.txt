@@ -1,0 +1,18 @@
+commit ba6ed2df46c1cc443586418cd936bc1f34c7060b
+Author: JuanjoG11 <alejo32perez32@gmail.com>
+Date:   Mon Mar 2 15:23:52 2026 -0500
+
+    mejorqando
+
+diff --git a/src/lib/supabase.js b/src/lib/supabase.js
+new file mode 100644
+index 0000000..d94fe08
+--- /dev/null
++++ b/src/lib/supabase.js
+@@ -0,0 +1,6 @@
++import { createClient } from '@supabase/supabase-js';
++
++const SUPABASE_URL = 'https://einbdcsdwdiaodcteavy.supabase.co';
++const SUPABASE_KEY = 'sb_publishable_b4KJwhaelYW8Mq7jYxWXBg_48kv2kHo';
++
++export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
