@@ -30,8 +30,9 @@ const SERVICES_BY_CATEGORY = {
 };
 
 const TIME_SLOTS = [
-    '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-    '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM',
+    '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
+    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM',
+    '7:00 PM', '8:00 PM', '9:00 PM'
 ];
 
 // WhatsApp individual de cada barbero
@@ -230,11 +231,18 @@ export default function BookingModal({ barber, onClose }) {
                     {/* PASO 3: Hora */}
                     {step === 3 && (
                         <motion.div key="s3" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} transition={{ duration: 0.18 }}>
-                            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>③ ¿A qué hora?</h3>
+                            <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>③ ¿HORA DE TU CITA? 🔥</h3>
                             {loadingSlots && <p style={{ opacity: 0.5, marginBottom: '1rem', fontWeight: 700 }}>Cargando disponibilidad...</p>}
                             <div className="time-grid">
                                 {TIME_SLOTS.map((t) => {
-                                    const isBooked = bookedSlots.includes(t);
+                                    // Normalizar para comparar con la base de datos
+                                    const normalize = (timeStr) => {
+                                        if (!timeStr) return '';
+                                        // "09:00 AM" -> "9 AM", "1:00 PM" -> "1 PM"
+                                        return timeStr.replace(/^0/, '').replace(':00', '');
+                                    };
+                                    
+                                    const isBooked = bookedSlots.some(bs => normalize(bs) === normalize(t));
                                     
                                     // Bloquear horas pasadas si es hoy
                                     const isPast = () => {
@@ -243,18 +251,20 @@ export default function BookingModal({ barber, onClose }) {
                                         if (date !== todayStr) return false;
 
                                         const [timePart, modifier] = t.split(' ');
-                                        let [hours, minutes] = timePart.split(':').map(Number);
+                                        let hours = parseInt(timePart, 10);
+                                        let minutes = timePart.includes(':') ? parseInt(timePart.split(':')[1], 10) : 0;
+
                                         if (modifier === 'PM' && hours !== 12) hours += 12;
                                         if (modifier === 'AM' && hours === 12) hours = 0;
 
                                         const slotTime = new Date();
                                         slotTime.setHours(hours, minutes, 0, 0);
                                         
-                                        // Permitir agendar si faltan al menos 15 minutos para la hora
                                         return slotTime < new Date(now.getTime() - 15 * 60000);
                                     };
 
                                     const disabled = isBooked || isPast();
+                                    const [hourPart, ampmPart] = t.split(' ');
 
                                     return (
                                         <button
@@ -264,7 +274,14 @@ export default function BookingModal({ barber, onClose }) {
                                             onClick={() => !disabled && setTime(t)}
                                             title={isBooked ? 'Hora ocupada' : isPast() ? 'Hora pasada' : ''}
                                         >
-                                            {disabled ? <s>{t}</s> : t}
+                                            {disabled ? (
+                                                <s>{hourPart} {ampmPart}</s>
+                                            ) : (
+                                                <>
+                                                    <span>{hourPart}</span>
+                                                    <span style={{ marginLeft: '2px', fontSize: '0.85em' }}>{ampmPart}</span>
+                                                </>
+                                            )}
                                         </button>
                                     );
                                 })}

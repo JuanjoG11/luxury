@@ -9,7 +9,7 @@ export async function getBookedSlots(barberId, date) {
         .select('time')
         .eq('barber_id', barberId)
         .eq('date', date)
-        .eq('status', 'confirmed');
+        .neq('status', 'cancelled');
 
     if (error) {
         console.error('Error fetching booked slots:', error);
@@ -23,19 +23,23 @@ export async function getBookedSlots(barberId, date) {
  * Crea una nueva cita en la base de datos.
  */
 export async function createAppointment({ barberId, barberName, serviceName, servicePrice, date, time, clientName, clientPhone }) {
+    const appointmentData = {
+        barber_id: barberId,
+        service_name: serviceName,
+        service_price: servicePrice,
+        date,
+        time,
+        client_name: clientName,
+        status: 'confirmed'
+    };
+
+    // Añadir campos opcionales solo si existen
+    if (barberName) appointmentData.barber_name = barberName;
+    if (clientPhone) appointmentData.client_phone = clientPhone;
+
     const { data, error } = await supabase
         .from('appointments')
-        .insert([{
-            barber_id: barberId,
-            barber_name: barberName,
-            service_name: serviceName,
-            service_price: servicePrice,
-            date,
-            time,
-            client_name: clientName,
-            client_phone: clientPhone,
-            status: 'confirmed'
-        }])
+        .insert([appointmentData])
         .select()
         .single();
 

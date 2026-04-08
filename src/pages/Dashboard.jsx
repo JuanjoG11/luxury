@@ -14,14 +14,15 @@ export default function Dashboard() {
     
     // Formulario manual
     const [mDate, setMDate] = useState(new Date().toISOString().split('T')[0]);
-    const [mTime, setMTime] = useState('09:00 AM');
+    const [mTime, setMTime] = useState('9:00 AM');
     const [mClient, setMClient] = useState('');
 
     const navigate = useNavigate();
 
     const TIME_SLOTS = [
-        '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-        '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM',
+        '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
+        '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM',
+        '7:00 PM', '8:00 PM', '9:00 PM'
     ];
 
     useEffect(() => {
@@ -35,23 +36,31 @@ export default function Dashboard() {
 
     const handleManualBooking = async (e) => {
         e.preventDefault();
-        const { error } = await supabase.from('appointments').insert([{
+        setLoading(true);
+
+        const appointmentData = {
             barber_id: barberId,
-            client_name: mClient || 'Cita Presencial',
+            barber_name: barberId.charAt(0).toUpperCase() + barberId.slice(1), // Nombre básico basado en ID
+            client_name: mClient.trim() || 'Bloqueo Manual',
+            client_phone: 'N/A',
             date: mDate,
             time: mTime,
             status: 'confirmed',
-            service_name: 'Manual/Presencial',
+            service_name: 'Bloqueo/Presencial',
             service_price: '$0K'
-        }]);
+        };
+
+        const { error } = await supabase.from('appointments').insert([appointmentData]);
 
         if (!error) {
             setShowManual(false);
             setMClient('');
             fetchAppointments();
         } else {
-            alert('Error al reservar manualmente');
+            console.error('Error detail:', error);
+            alert(`Error de Supabase: ${error.message}\nDetalle: ${error.details}\nHint: ${error.hint}`);
         }
+        setLoading(false);
     };
 
     const fetchAppointments = async () => {
@@ -66,7 +75,7 @@ export default function Dashboard() {
             .order('time', { ascending: filter === 'pending' });
 
         if (filter === 'pending') {
-            query = query.eq('status', 'confirmed');
+            query = query.neq('status', 'cancelled').neq('status', 'completed');
         } else {
             query = query.eq('status', 'completed');
         }
